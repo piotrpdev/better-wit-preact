@@ -42,7 +42,7 @@ export default function App() {
   );
 
   useEffect(() => {
-    if (timetableData) return;
+    if (timetableData || !settings.timetableJsonUrl) return;
 
     fetch(settings.timetableJsonUrl).then((response) => {
       if (response.ok) {
