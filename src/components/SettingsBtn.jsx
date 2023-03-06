@@ -1,14 +1,19 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useRef } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { FaCog } from "react-icons/fa";
+import { FaCog, FaCheck } from "react-icons/fa";
 import { SettingsContext } from "../contexts/SettingsContext";
 import Checkbox from "./Checkbox";
+import InputGroup from 'react-bootstrap/InputGroup';
 
 export default function SettingsBtn() {
   const { settings, setSettings } = useContext(SettingsContext);
+  const jsonUrlRef = useRef(null);
   const [show, setShow] = useState(false);
+
+  const [jsonUrlValid, setJsonUrlValid] = useState(false);
+  const [jsonUrlInvalid, setJsonUrlInvalid] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -18,6 +23,26 @@ export default function SettingsBtn() {
       ...prev,
       [event.target.value]: event.target.checked,
     }));
+  };
+
+  const handleJsonUrlBtnClick = () => {
+    const jsonUrl = jsonUrlRef.current.value;
+
+    const expression = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
+    const regex = new RegExp(expression);
+
+    if (jsonUrl.match(regex)) {
+      setJsonUrlInvalid(false);
+      setJsonUrlValid(true);
+
+      setSettings((prev) => ({
+        ...prev,
+        timetableJsonUrl: jsonUrl,
+      }));
+    } else {
+      setJsonUrlValid(false);
+      setJsonUrlInvalid(true);
+    }
   };
 
   return (
@@ -35,8 +60,18 @@ export default function SettingsBtn() {
           <Modal.Title>Settings</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form>
-            {Object.keys(settings).map((setting) => (
+        <Form>
+        <InputGroup className="mb-3">
+        <Form.Label>Timetable JSON URL</Form.Label>
+        <div className="settingsInput">
+          <Form.Control ref={jsonUrlRef} type="text" placeholder="https://gist.github.com/<user>/<id>" isValid={jsonUrlValid} isInvalid={jsonUrlInvalid} />
+          <Button variant="primary" id="jsonUrl-buttonAddon" onClick={handleJsonUrlBtnClick}>
+            <FaCheck />
+          </Button>
+        </div>
+      </InputGroup>
+    </Form>
+            {Object.keys(settings.checkboxes).map((setting) => (
               <Checkbox
                 value={setting}
                 checked={settings[setting]}
@@ -44,7 +79,6 @@ export default function SettingsBtn() {
                 label={`${setting}`}
               />
             ))}
-          </Form>
         </Modal.Body>
         <Modal.Footer className="modal-footer">
           Made with ❤️ by{" "}

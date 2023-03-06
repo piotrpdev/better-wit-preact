@@ -1,13 +1,14 @@
 import { useState } from "react";
 import Accordion from "react-bootstrap/Accordion";
 import Checkbox from "./Checkbox";
+import getSubjectsFromData from "../utils/getSubjectsFromData";
 
 export default function SubjectList({
-  subjects,
+  timetableData,
   checkedSubjects,
   setCheckedSubjects,
 }) {
-  const [open, setOpen] = useState(false);
+  const subjects = getSubjectsFromData(timetableData);
 
   const handleCheckboxChange = (event) => {
     if (event.target.checked) {

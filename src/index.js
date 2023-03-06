@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DayEntries from "./components/DayEntries";
 import DayList from "./components/DayList";
 import SettingsBtn from "./components/SettingsBtn";
 import SubjectList from "./components/SubjectList";
 import useLocalStorageState from "use-local-storage-state";
 import { SettingsContext } from "./contexts/SettingsContext";
+import Spinner from 'react-bootstrap/Spinner';
 
 // import "bootstrap/dist/css/bootstrap.min.css";
 // import "bootswatch/dist/slate/bootstrap.min.css";
@@ -14,23 +15,61 @@ import "bootswatch/dist/superhero/bootstrap.min.css";
 import "./styles.css";
 
 // https://gist.github.com/piotrpdev/26a84b878b6de2ebbb4f78bbc1ae467c
-import _timetableData from "./timetable.json";
-import getSubjectsFromData from "./utils/getSubjectsFromData";
-const timetableData = JSON.parse(_timetableData);
 
 export default function App() {
   const [settings, setSettings] = useLocalStorageState("settings", {
-    defaultValue: { "Show Type and Location": false },
+    defaultValue: { timetableJsonUrl: null, checkboxes: {
+      "Show Type and Location": false
+    } },
   });
 
   const [day, setDay] = useState("Monday");
-  const [subjects] = useState(getSubjectsFromData(timetableData));
+
+  const [JsonParseError, setJsonParseError] = useState(false);
+
+  const [timetableData, setTimetableData] = useLocalStorageState(
+    "timetable_json_data",
+    {
+      defaultValue: null,
+    }
+  );
+
   const [checkedSubjects, setCheckedSubjects] = useLocalStorageState(
     "hiddenModules",
     {
       defaultValue: [],
     }
   );
+
+  useEffect(() => {
+    if (timetableData) return;
+
+    fetch(settings.timetableJsonUrl).then((response) => {
+      if (response.ok) {
+        return response.json()
+      }
+      throw new Error("Network response was not ok.");
+    }).then((data) => {
+      if (!data?.files?.["timetable.json"]) {
+        throw new Error("No timetable.json file found.")
+      }
+      
+      const parsedData = JSON.parse(data.files["timetable.json"].content);
+
+      setTimetableData(parsedData);
+    }).catch((error) => {
+      setJsonParseError(true);
+      console.error("Error fetching/parsing timetable json:", error);
+    });
+
+    
+    // import("./timetable.json").then((data) => {
+    //   const importedTimetableData = data.default;
+    //   //const parsedTimetableData = JSON.parse(importedTimetableData);
+    //   console.dir(importedTimetableData.days)
+    //   setTimetableData(importedTimetableData.days);
+    // });
+  }, []);
 
   return (
     <SettingsContext.Provider value={{ settings, setSettings }}>
@@ -40,17 +79,19 @@ export default function App() {
           <SettingsBtn />
         </header>
         <DayList currentDay={day} setDay={setDay} />
-        <SubjectList
-          subjects={subjects}
+        {settings.timetableJsonUrl ? (!JsonParseError ? ((timetableData && timetableData.days) ? <> <SubjectList
+          timetableData={timetableData.days}
           checkedSubjects={checkedSubjects}
           setCheckedSubjects={setCheckedSubjects}
         />
-        <DayEntries
-          dayTimetableData={timetableData[day].filter(
-            (_entry) =>
-              !checkedSubjects.includes(_entry["Subject Code and Title"])
-          )}
-        />
+          <DayEntries
+            dayTimetableData={timetableData.days[day].filter(
+              (_entry) =>
+                !checkedSubjects.includes(_entry["Subject Code and Title"])
+            )}
+          /> </> : <Spinner className="mt-5" animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>) : <p className="mt-5">Something went wrong parsing the JSON data, please make sure you set the correct URL</p> ) : <p className="mt-5">Please set the correct timetable JSON URL in the settings.</p>}
       </div>
     </SettingsContext.Provider>
   );

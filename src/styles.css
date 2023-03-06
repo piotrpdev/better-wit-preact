@@ -1,7 +1,3 @@
-body {
-  font-family: "Roboto", sans-serif;
-}
-
 .App {
   text-align: center;
 }
@@ -142,4 +138,12 @@ table td .lecturer {
   gap: 30px;
 
   margin-top: 40px;
+}
+
+.settingsInput {
+  display: flex;
+}
+
+.modal-body .input-group {
+  flex-direction: column;
 }

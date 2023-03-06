@@ -1,6 +1,9 @@
 import { createContext } from "react";
 
 export const SettingsContext = createContext({
-  "Show Type and Location": true,
-  setTypeAndLocation: () => {},
+  timetableJsonUrl: null,
+  checkboxes: {
+    "Show Type and Location": true,
+    setTypeAndLocation: () => {},
+  }
 });
