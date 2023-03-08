@@ -1,11 +1,11 @@
 {
-  "name": "better-wit-preact",
-  "short_name": "better-wit-preact",
+  "name": "WIT Timetable",
+  "short_name": "WIT Timetable",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#fff",
-  "theme_color": "#673ab8",
+  "background_color": "#0f2537",
+  "theme_color": "#0f2537",
   "icons": [{
     "src": "/assets/icon.png",
     "type": "image/png",

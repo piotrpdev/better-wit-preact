@@ -64,7 +64,7 @@ export default function SettingsBtn() {
         <InputGroup className="mb-3">
         <Form.Label>Timetable JSON URL</Form.Label>
         <div className="settingsInput">
-          <Form.Control ref={jsonUrlRef} type="text" placeholder="https://gist.github.com/<user>/<id>" isValid={jsonUrlValid} isInvalid={jsonUrlInvalid} />
+          <Form.Control ref={jsonUrlRef} type="text" placeholder="https://api.github.com/gists/<GIST_ID>" defaultValue={settings.timetableJsonUrl} isValid={jsonUrlValid} isInvalid={jsonUrlInvalid} />
           <Button variant="primary" id="jsonUrl-buttonAddon" onClick={handleJsonUrlBtnClick}>
             <FaCheck />
           </Button>

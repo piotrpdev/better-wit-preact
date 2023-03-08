@@ -11,7 +11,7 @@ import Spinner from 'react-bootstrap/Spinner';
 // import "bootswatch/dist/slate/bootstrap.min.css";
 // import "bootswatch/dist/morph/bootstrap.min.css";
 // import "bootswatch/dist/superhero/bootstrap.min.css"; // This is a good one
-import "bootswatch/dist/superhero/bootstrap.min.css";
+ import "bootswatch/dist/superhero/bootstrap.min.css";
 import "./styles.css";
 
 // https://gist.github.com/piotrpdev/26a84b878b6de2ebbb4f78bbc1ae467c
@@ -42,6 +42,7 @@ export default function App() {
   );
 
   useEffect(() => {
+    setJsonParseError(false);
     if (timetableData || !settings.timetableJsonUrl) return;
 
     fetch(settings.timetableJsonUrl).then((response) => {
@@ -69,7 +70,7 @@ export default function App() {
     //   console.dir(importedTimetableData.days)
     //   setTimetableData(importedTimetableData.days);
     // });
-  }, []);
+  }, [settings.timetableJsonUrl]);
 
   return (
     <SettingsContext.Provider value={{ settings, setSettings }}>
