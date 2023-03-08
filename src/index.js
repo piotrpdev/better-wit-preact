@@ -5,22 +5,25 @@ import SettingsBtn from "./components/SettingsBtn";
 import SubjectList from "./components/SubjectList";
 import useLocalStorageState from "use-local-storage-state";
 import { SettingsContext } from "./contexts/SettingsContext";
-import Spinner from 'react-bootstrap/Spinner';
+import Spinner from "react-bootstrap/Spinner";
 
 // import "bootstrap/dist/css/bootstrap.min.css";
 // import "bootswatch/dist/slate/bootstrap.min.css";
 // import "bootswatch/dist/morph/bootstrap.min.css";
 // import "bootswatch/dist/superhero/bootstrap.min.css"; // This is a good one
- import "bootswatch/dist/superhero/bootstrap.min.css";
+import "bootswatch/dist/superhero/bootstrap.min.css";
 import "./styles.css";
 
 // https://gist.github.com/piotrpdev/26a84b878b6de2ebbb4f78bbc1ae467c
 
 export default function App() {
   const [settings, setSettings] = useLocalStorageState("settings", {
-    defaultValue: { timetableJsonUrl: null, checkboxes: {
-      "Show Type and Location": false
-    } },
+    defaultValue: {
+      timetableJsonUrl: null,
+      checkboxes: {
+        "Show Type and Location": false,
+      },
+    },
   });
 
   const [day, setDay] = useState("Monday");
@@ -45,32 +48,34 @@ export default function App() {
     setJsonParseError(false);
     if (timetableData || !settings.timetableJsonUrl) return;
 
-    fetch(settings.timetableJsonUrl).then((response) => {
-      if (response.ok) {
-        return response.json()
-      }
-      throw new Error("Network response was not ok.");
-    }).then((data) => {
-      if (!data?.files?.["timetable.json"]) {
-        throw new Error("No timetable.json file found.")
-      }
-      
-      const parsedData = JSON.parse(data.files["timetable.json"].content);
+    fetch(settings.timetableJsonUrl)
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw new Error("Network response was not ok.");
+      })
+      .then((data) => {
+        if (!data?.files?.["timetable.json"]) {
+          throw new Error("No timetable.json file found.");
+        }
 
-      setTimetableData(parsedData);
-    }).catch((error) => {
-      setJsonParseError(true);
-      console.error("Error fetching/parsing timetable json:", error);
-    });
+        const parsedData = JSON.parse(data.files["timetable.json"].content);
 
-    
+        setTimetableData(parsedData);
+      })
+      .catch((error) => {
+        setJsonParseError(true);
+        console.error("Error fetching/parsing timetable json:", error);
+      });
+
     // import("./timetable.json").then((data) => {
     //   const importedTimetableData = data.default;
     //   //const parsedTimetableData = JSON.parse(importedTimetableData);
     //   console.dir(importedTimetableData.days)
     //   setTimetableData(importedTimetableData.days);
     // });
-  }, [settings.timetableJsonUrl]);
+  }, [settings.timetableJsonUrl, setTimetableData, timetableData]);
 
   return (
     <SettingsContext.Provider value={{ settings, setSettings }}>
@@ -80,19 +85,41 @@ export default function App() {
           <SettingsBtn />
         </header>
         <DayList currentDay={day} setDay={setDay} />
-        {settings.timetableJsonUrl ? (!JsonParseError ? ((timetableData && timetableData.days) ? <> <SubjectList
-          timetableData={timetableData.days}
-          checkedSubjects={checkedSubjects}
-          setCheckedSubjects={setCheckedSubjects}
-        />
-          <DayEntries
-            dayTimetableData={timetableData.days[day].filter(
-              (_entry) =>
-                !checkedSubjects.includes(_entry["Subject Code and Title"])
-            )}
-          /> </> : <Spinner className="mt-5" animation="border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </Spinner>) : <p className="mt-5">Something went wrong parsing the JSON data, please make sure you set the correct URL</p> ) : <p className="mt-5">Please set the correct timetable JSON URL in the settings.</p>}
+        {settings.timetableJsonUrl ? (
+          !JsonParseError ? (
+            timetableData && timetableData.days ? (
+              <>
+                {" "}
+                <SubjectList
+                  timetableData={timetableData.days}
+                  checkedSubjects={checkedSubjects}
+                  setCheckedSubjects={setCheckedSubjects}
+                />
+                <DayEntries
+                  dayTimetableData={timetableData.days[day].filter(
+                    (_entry) =>
+                      !checkedSubjects.includes(
+                        _entry["Subject Code and Title"]
+                      )
+                  )}
+                />{" "}
+              </>
+            ) : (
+              <Spinner className="mt-5" animation="border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </Spinner>
+            )
+          ) : (
+            <p className="mt-5">
+              Something went wrong parsing the JSON data, please make sure you
+              set the correct URL
+            </p>
+          )
+        ) : (
+          <p className="mt-5">
+            Please set the correct timetable JSON URL in the settings.
+          </p>
+        )}
       </div>
     </SettingsContext.Provider>
   );

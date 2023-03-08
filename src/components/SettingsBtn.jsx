@@ -5,7 +5,7 @@ import Modal from "react-bootstrap/Modal";
 import { FaCog, FaCheck } from "react-icons/fa";
 import { SettingsContext } from "../contexts/SettingsContext";
 import Checkbox from "./Checkbox";
-import InputGroup from 'react-bootstrap/InputGroup';
+import InputGroup from "react-bootstrap/InputGroup";
 
 export default function SettingsBtn() {
   const { settings, setSettings } = useContext(SettingsContext);
@@ -28,7 +28,9 @@ export default function SettingsBtn() {
   const handleJsonUrlBtnClick = () => {
     const jsonUrl = jsonUrlRef.current.value;
 
-    const expression = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
+    const expression =
+      // eslint-disable-next-line no-useless-escape
+      /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
     const regex = new RegExp(expression);
 
     if (jsonUrl.match(regex)) {
@@ -60,29 +62,45 @@ export default function SettingsBtn() {
           <Modal.Title>Settings</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-        <Form>
-        <InputGroup className="mb-3">
-        <Form.Label>Timetable JSON URL</Form.Label>
-        <div className="settingsInput">
-          <Form.Control ref={jsonUrlRef} type="text" placeholder="https://api.github.com/gists/<GIST_ID>" defaultValue={settings.timetableJsonUrl} isValid={jsonUrlValid} isInvalid={jsonUrlInvalid} />
-          <Button variant="primary" id="jsonUrl-buttonAddon" onClick={handleJsonUrlBtnClick}>
-            <FaCheck />
-          </Button>
-        </div>
-      </InputGroup>
-    </Form>
-            {Object.keys(settings.checkboxes).map((setting) => (
-              <Checkbox
-                value={setting}
-                checked={settings[setting]}
-                onChange={handleCheckboxChange}
-                label={`${setting}`}
-              />
-            ))}
+          <Form>
+            <InputGroup className="mb-3">
+              <Form.Label>Timetable JSON URL</Form.Label>
+              <div className="settingsInput">
+                <Form.Control
+                  ref={jsonUrlRef}
+                  type="text"
+                  placeholder="https://api.github.com/gists/<GIST_ID>"
+                  defaultValue={settings.timetableJsonUrl}
+                  isValid={jsonUrlValid}
+                  isInvalid={jsonUrlInvalid}
+                />
+                <Button
+                  variant="primary"
+                  id="jsonUrl-buttonAddon"
+                  onClick={handleJsonUrlBtnClick}
+                >
+                  <FaCheck />
+                </Button>
+              </div>
+            </InputGroup>
+          </Form>
+          {Object.keys(settings.checkboxes).map((setting) => (
+            <Checkbox
+              key={`checkbox-${setting.replace(/\s/g, "")}`}
+              value={setting}
+              checked={settings[setting]}
+              onChange={handleCheckboxChange}
+              label={`${setting}`}
+            />
+          ))}
         </Modal.Body>
         <Modal.Footer className="modal-footer">
           Made with ❤️ by{" "}
-          <a href="https://github.com/piotrpdev" target="_blank">
+          <a
+            href="https://github.com/piotrpdev"
+            target="_blank"
+            rel="noreferrer"
+          >
             piotrpdev
           </a>
         </Modal.Footer>
