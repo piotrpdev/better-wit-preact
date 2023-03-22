@@ -26,7 +26,10 @@ export default function App() {
     },
   });
 
-  const [day, setDay] = useState("Monday");
+  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+  const todayName = new Date().toLocaleString("en-us", { weekday: "long" });
+
+  const [day, setDay] = useState(days.includes(todayName) ? todayName : "Monday");
 
   const [JsonParseError, setJsonParseError] = useState(false);
 
@@ -84,12 +87,11 @@ export default function App() {
           <h1 className="py-2 mb-3">WIT Timetable</h1>
           <SettingsBtn />
         </header>
-        <DayList currentDay={day} setDay={setDay} />
+        <DayList currentDay={day} setDay={setDay} todayName={todayName} days={days} todayWeekday={day} />
         {settings.timetableJsonUrl ? (
           !JsonParseError ? (
             timetableData && timetableData.days ? (
               <>
-                {" "}
                 <SubjectList
                   timetableData={timetableData.days}
                   checkedSubjects={checkedSubjects}
@@ -102,7 +104,7 @@ export default function App() {
                         _entry["Subject Code and Title"]
                       )
                   )}
-                />{" "}
+                />
               </>
             ) : (
               <Spinner className="mt-5" animation="border" role="status">
