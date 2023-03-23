@@ -1,6 +1,6 @@
 # Better WIT Timetable ![preact](https://img.shields.io/badge/made%20with-preact-blueviolet)
 
-<img style="float:right;" src=".github/img/mockup.png" height=500 />
+<img align="right" src=".github/img/mockup.png" height=500 />
 
 This is a nicer timetable for WIT. It's a work in progress, so it's not perfect yet.
 
