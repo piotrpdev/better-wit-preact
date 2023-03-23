@@ -29,6 +29,7 @@
     "bootstrap": "^5.2.3",
     "bootswatch": "^5.2.3",
     "cross-env": "^7.0.3",
+    "luxon": "^3.3.0",
     "preact": "^10.1.0",
     "preact-render-to-string": "^5.1.2",
     "react-bootstrap": "^2.7.2",

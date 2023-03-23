@@ -6,6 +6,7 @@ import SubjectList from "./components/SubjectList";
 import useLocalStorageState from "use-local-storage-state";
 import { SettingsContext } from "./contexts/SettingsContext";
 import Spinner from "react-bootstrap/Spinner";
+import { DateTime } from "luxon";
 
 // import "bootstrap/dist/css/bootstrap.min.css";
 // import "bootswatch/dist/slate/bootstrap.min.css";
@@ -27,7 +28,7 @@ export default function App() {
   });
 
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-  const todayName = new Date().toLocaleString("en-us", { weekday: "long" });
+  const todayName = DateTime.now().setZone('Europe/Dublin').toFormat("EEEE");
 
   const [day, setDay] = useState(days.includes(todayName) ? todayName : "Monday");
 

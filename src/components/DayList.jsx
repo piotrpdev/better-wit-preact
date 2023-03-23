@@ -8,9 +8,15 @@ export default function DayList({
   todayWeekday,
 }) {
   return (
-    <Nav className="px-2" fill variant="tabs" defaultActiveKey={todayWeekday}>
+    <Nav
+      className="px-2"
+      fill
+      variant="tabs"
+      defaultActiveKey={todayWeekday}
+      activeKey={todayWeekday}
+    >
       {days.map((day) => (
-        <Nav.Item>
+        <Nav.Item key={day}>
           <Nav.Link eventKey={day} onClick={() => setDay(day)}>
             {day === todayName ? (
               <b className="text-warning">{day.slice(0, 3)}</b>
