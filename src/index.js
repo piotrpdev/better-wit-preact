@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import DayEntries from "./components/DayEntries";
 import DayList from "./components/DayList";
 import SettingsBtn from "./components/SettingsBtn";
@@ -27,10 +27,14 @@ export default function App() {
     },
   });
 
-  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-  const todayName = DateTime.now().setZone('Europe/Dublin').toFormat("EEEE");
+  const days = useMemo(() => ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], []);
+  const [todayName] = useState(DateTime.now().setZone('Europe/Dublin').toFormat("EEEE"));
 
-  const [day, setDay] = useState(days.includes(todayName) ? todayName : "Monday");
+  const getWeekday = useCallback(() => {
+    return days.includes(todayName) ? todayName : "Monday"
+  }, [days, todayName])
+
+  const [day, setDay] = useState(getWeekday);
 
   const [JsonParseError, setJsonParseError] = useState(false);
 
@@ -81,6 +85,10 @@ export default function App() {
     // });
   }, [settings.timetableJsonUrl, setTimetableData, timetableData]);
 
+  useEffect(() => {
+    setDay(getWeekday())
+  }, [todayName, getWeekday])
+
   return (
     <SettingsContext.Provider value={{ settings, setSettings }}>
       <div className="App">
@@ -88,7 +96,7 @@ export default function App() {
           <h1 className="py-2 mb-3">WIT Timetable</h1>
           <SettingsBtn />
         </header>
-        <DayList currentDay={day} setDay={setDay} todayName={todayName} days={days} todayWeekday={day} />
+        <DayList setDay={setDay} todayName={todayName} days={days} todayWeekday={day} />
         {settings.timetableJsonUrl ? (
           !JsonParseError ? (
             timetableData && timetableData.days ? (
