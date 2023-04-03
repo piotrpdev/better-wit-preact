@@ -4,7 +4,7 @@ import DayList from "./components/DayList";
 import SettingsBtn from "./components/SettingsBtn";
 import SubjectList from "./components/SubjectList";
 import useLocalStorageState from "use-local-storage-state";
-import { SettingsContext } from "./contexts/SettingsContext";
+import { SettingsContext, SettingsDefault } from "./contexts/SettingsContext";
 import Spinner from "react-bootstrap/Spinner";
 import { DateTime } from "luxon";
 
@@ -19,16 +19,12 @@ import "./styles.css";
 
 export default function App() {
   const [settings, setSettings] = useLocalStorageState("settings", {
-    defaultValue: {
-      timetableJsonUrl: null,
-      checkboxes: {
-        "Show Type and Location": false,
-      },
-    },
+    defaultValue: SettingsDefault,
   });
 
   const days = useMemo(() => ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], []);
-  const [todayName] = useState(DateTime.now().setZone('Europe/Dublin').toFormat("EEEE"));
+  const [now] = useState(DateTime.now())
+  const [todayName] = useState(now.setZone('Europe/Dublin').toFormat("EEEE"));
 
   const getWeekday = useCallback(() => {
     return days.includes(todayName) ? todayName : "Monday"
@@ -54,6 +50,17 @@ export default function App() {
 
   useEffect(() => {
     setJsonParseError(false);
+    if (timetableData?.devDetails) {
+      const timetableDate = DateTime.fromISO(timetableData.devDetails.generatedDate)
+
+      if (!timetableData.invalid) {
+        const diffDays = now.diff(timetableDate, 'days').toObject().days
+
+        if (diffDays >= 7 && settings["Auto Update"]) {
+          // setTimetableData(null)
+        }
+      }
+    }
     if (timetableData || !settings.timetableJsonUrl) return;
 
     fetch(settings.timetableJsonUrl)
@@ -83,7 +90,7 @@ export default function App() {
     //   console.dir(importedTimetableData.days)
     //   setTimetableData(importedTimetableData.days);
     // });
-  }, [settings.timetableJsonUrl, setTimetableData, timetableData]);
+  }, [settings.timetableJsonUrl, setTimetableData, timetableData, now, settings]);
 
   useEffect(() => {
     setDay(getWeekday())
@@ -94,7 +101,7 @@ export default function App() {
       <div className="App">
         <header>
           <h1 className="py-2 mb-3">WIT Timetable</h1>
-          <SettingsBtn />
+          <SettingsBtn timetableData={timetableData} setTimetableData={setTimetableData} />
         </header>
         <DayList setDay={setDay} todayName={todayName} days={days} todayWeekday={day} />
         {settings.timetableJsonUrl ? (

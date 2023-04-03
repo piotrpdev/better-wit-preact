@@ -2,12 +2,13 @@ import { useContext, useState, useRef } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { FaCog, FaCheck } from "react-icons/fa";
-import { SettingsContext } from "../contexts/SettingsContext";
+import Table from "react-bootstrap/Table";
+import { FaCog, FaCheck, FaRedo } from "react-icons/fa";
+import { SettingsContext, SettingsDefault } from "../contexts/SettingsContext";
 import Checkbox from "./Checkbox";
 import InputGroup from "react-bootstrap/InputGroup";
 
-export default function SettingsBtn() {
+export default function SettingsBtn({ timetableData, setTimetableData }) {
   const { settings, setSettings } = useContext(SettingsContext);
   const jsonUrlRef = useRef(null);
   const [show, setShow] = useState(false);
@@ -41,10 +42,17 @@ export default function SettingsBtn() {
         ...prev,
         timetableJsonUrl: jsonUrl,
       }));
+
+      setTimetableData(null);
     } else {
       setJsonUrlValid(false);
       setJsonUrlInvalid(true);
     }
+  };
+
+  const handleClearSettingsBtnClick = () => {
+    setSettings(SettingsDefault);
+    setShow(false);
   };
 
   return (
@@ -75,6 +83,13 @@ export default function SettingsBtn() {
                   isInvalid={jsonUrlInvalid}
                 />
                 <Button
+                  variant="success"
+                  id="jsonUrl-buttonAddon"
+                  onClick={handleJsonUrlBtnClick}
+                >
+                  <FaRedo />
+                </Button>
+                <Button
                   variant="primary"
                   id="jsonUrl-buttonAddon"
                   onClick={handleJsonUrlBtnClick}
@@ -84,15 +99,47 @@ export default function SettingsBtn() {
               </div>
             </InputGroup>
           </Form>
-          {Object.keys(settings.checkboxes).map((setting) => (
-            <Checkbox
-              key={`checkbox-${setting.replace(/\s/g, "")}`}
-              value={setting}
-              checked={settings[setting]}
-              onChange={handleCheckboxChange}
-              label={`${setting}`}
-            />
-          ))}
+          {timetableData && (
+            <Table striped bordered responsive>
+              <thead>
+                <tr>
+                  <th colSpan="2">Timetable Data</th>
+                </tr>
+                <tr>
+                  <th>Key</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.entries(timetableData)
+                  .filter(([, value]) => typeof value === "string")
+                  .map(([key, value]) => (
+                    <tr key={`table-row-${key}`}>
+                      <td>{key}</td>
+                      <td>{value}</td>
+                    </tr>
+                  ))}
+              </tbody>
+            </Table>
+          )}
+          <div className="settings-checkboxes">
+            {Object.keys(settings.checkboxes).map((setting) => (
+              <Checkbox
+                key={`checkbox-${setting.replace(/\s/g, "")}`}
+                value={setting}
+                checked={settings[setting]}
+                onChange={handleCheckboxChange}
+                label={`${setting}`}
+              />
+            ))}
+          </div>
+          <Button
+            id="clearSettings"
+            variant="danger"
+            onClick={handleClearSettingsBtnClick}
+          >
+            Clear Settings
+          </Button>
         </Modal.Body>
         <Modal.Footer className="modal-footer">
           Made with ❤️ by{" "}

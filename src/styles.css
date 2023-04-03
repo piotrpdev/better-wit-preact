@@ -18,24 +18,24 @@ header {
   justify-content: center;
 }
 
-table {
+table.entryContainer {
   margin: 0 auto;
   border-collapse: separate;
   border-spacing: 1px 20px;
 }
 
-table td {
+table.entryContainer td {
   padding: 10px 15px;
 }
 
-table td.room-and-time {
+table.entryContainer td.room-and-time {
   position: relative;
   font-size: 1.5rem;
   font-weight: bold;
   width: 80px;
 }
 
-table td .room-and-time-flex {
+table.entryContainer td .room-and-time-flex {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -50,11 +50,11 @@ table td .room-and-time-flex {
   width: 100%;
 }
 
-table td.subject-and-lecturer {
+table.entryContainer td.subject-and-lecturer {
   text-align: left;
 }
 
-table td .lecturer {
+table.entryContainer td .lecturer {
   opacity: 0.5;
   margin-top: 5px;
   font-weight: bold;
@@ -66,7 +66,7 @@ table td .lecturer {
     border-radius: 5px 0px 0px 5px;
   }
 
-  table td.icons {
+  table.entryContainer td.icons {
     border-radius: 0px 5px 5px 0px;
   }
 
@@ -146,4 +146,12 @@ table td .lecturer {
 
 .modal-body .input-group {
   flex-direction: column;
+}
+
+.settings-checkboxes {
+  margin-top: 10px;
+}
+
+#clearSettings {
+  margin-top: 20px;
 }
