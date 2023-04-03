@@ -5,7 +5,7 @@ export const SettingsContext = createContext({
   checkboxes: {
     "Show Type and Location": false,
     setTypeAndLocation: () => { },
-    "Auto Update": false,
+    "Auto Update": true,
     setAutoUpdate: () => { },
   },
 });
@@ -14,6 +14,6 @@ export const SettingsDefault = {
   timetableJsonUrl: null,
   checkboxes: {
     "Show Type and Location": false,
-    "Auto Update": false,
+    "Auto Update": true,
   },
 }

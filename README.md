@@ -19,6 +19,7 @@ The app uses the timetable JSON generated from my [WIT Timetable Generator](http
 - [x] Optional icons for the above
 - [x] Automatically shows timetable for current day
 - [x] Stores everything locally
+- [x] Checks for new timetable when you open the app
 - [ ] Nuclear launch codes
 
 ## Stack

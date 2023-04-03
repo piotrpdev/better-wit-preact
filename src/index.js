@@ -89,7 +89,8 @@ export default function App() {
         setTimetableData(data);
       }
     });
-  }, [settings.timetableJsonUrl, setTimetableData, timetableData, now, settings]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settings.timetableJsonUrl, settings["Auto Update"], timetableData, now]);
 
   useEffect(() => {
     setDay(getWeekday())
@@ -112,14 +113,14 @@ export default function App() {
                   checkedSubjects={checkedSubjects}
                   setCheckedSubjects={setCheckedSubjects}
                 />
-                <DayEntries
+                {timetableData.days[day].length > 0 ? <DayEntries
                   dayTimetableData={timetableData.days[day].filter(
                     (_entry) =>
                       !checkedSubjects.includes(
                         _entry["Subject Code and Title"]
                       )
                   )}
-                />
+                /> : <p className="mt-5">No classes today</p>}
               </>
             ) : (
               <Spinner className="mt-5" animation="border" role="status">
