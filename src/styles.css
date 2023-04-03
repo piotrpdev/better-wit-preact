@@ -152,6 +152,32 @@ table.entryContainer td .lecturer {
   margin-top: 10px;
 }
 
-#clearSettings {
+#clearSettings,
+#settings-debug {
   margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+#settings-debug {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+#refetch-toast > .toast-body {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#refetch-toast-details {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+#refetch-toast-details table {
+  margin-bottom: 0px;
 }

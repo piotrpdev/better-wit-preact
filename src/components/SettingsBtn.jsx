@@ -19,6 +19,14 @@ export default function SettingsBtn({ timetableData, setTimetableData }) {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  const updateJsonUrl = (jsonUrl) => {
+    setSettings((prev) => ({
+      ...prev,
+      timetableJsonUrl: jsonUrl,
+    }));
+    setTimetableData(null);
+  };
+
   const handleCheckboxChange = (event) => {
     setSettings((prev) => ({
       ...prev,
@@ -38,12 +46,7 @@ export default function SettingsBtn({ timetableData, setTimetableData }) {
       setJsonUrlInvalid(false);
       setJsonUrlValid(true);
 
-      setSettings((prev) => ({
-        ...prev,
-        timetableJsonUrl: jsonUrl,
-      }));
-
-      setTimetableData(null);
+      updateJsonUrl(jsonUrl);
     } else {
       setJsonUrlValid(false);
       setJsonUrlInvalid(true);
@@ -140,6 +143,34 @@ export default function SettingsBtn({ timetableData, setTimetableData }) {
           >
             Clear Settings
           </Button>
+          {process.env.NODE_ENV === "development" && (
+            <div id="settings-debug">
+              <h3>Debug</h3>
+              <Button
+                variant="primary"
+                onClick={() => updateJsonUrl(process.env.NEW_JSON_URL)}
+              >
+                Use New JSON URL
+              </Button>
+              <Button
+                variant="primary"
+                onClick={() => updateJsonUrl(process.env.OLD_JSON_URL)}
+              >
+                Use Old JSON URL
+              </Button>
+              <Button
+                variant="primary"
+                onClick={() =>
+                  setTimetableData(JSON.parse(process.env.OLD_TIMETABLE_DATA))
+                }
+              >
+                Use Old Timetable Data
+              </Button>
+              <Button variant="primary" onClick={() => setTimetableData(null)}>
+                Clear Timetable Data
+              </Button>
+            </div>
+          )}
         </Modal.Body>
         <Modal.Footer className="modal-footer">
           Made with ❤️ by{" "}
