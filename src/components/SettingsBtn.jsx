@@ -8,7 +8,9 @@ import { SettingsContext, SettingsDefault } from "../contexts/SettingsContext";
 import Checkbox from "./Checkbox";
 import InputGroup from "react-bootstrap/InputGroup";
 
-export default function SettingsBtn({ timetableData, setTimetableData }) {
+export default function SettingsBtn({
+  timetableDataState: { timetableData, setTimetableData },
+}) {
   const { settings, setSettings } = useContext(SettingsContext);
   const jsonUrlRef = useRef(null);
   const [show, setShow] = useState(false);

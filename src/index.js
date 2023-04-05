@@ -1,14 +1,11 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import DayEntries from "./components/DayEntries";
 import DayList from "./components/DayList";
-import Table from "react-bootstrap/Table";
-import Button from "react-bootstrap/Button";
 import SettingsBtn from "./components/SettingsBtn";
 import SubjectList from "./components/SubjectList";
 import useLocalStorageState from "use-local-storage-state";
 import { SettingsContext, SettingsDefault } from "./contexts/SettingsContext";
 import Spinner from "react-bootstrap/Spinner";
-import Toast from 'react-bootstrap/Toast';
 import ToastContainer from 'react-bootstrap/ToastContainer';
 import { DateTime } from "luxon";
 
@@ -19,6 +16,7 @@ import { DateTime } from "luxon";
 import "bootswatch/dist/superhero/bootstrap.min.css";
 import "./styles.css";
 import fetchTimetable from "./utils/fetchTimetable";
+import RefetchToast from "./components/RefetchToast";
 
 // https://gist.github.com/piotrpdev/26a84b878b6de2ebbb4f78bbc1ae467c
 
@@ -101,69 +99,45 @@ export default function App() {
       <div className="App">
         <header>
           <h1 className="py-2 mb-3">WIT Timetable</h1>
-          <SettingsBtn timetableData={timetableData} setTimetableData={setTimetableData} />
+          <SettingsBtn timetableDataState={{ timetableData, setTimetableData }} />
         </header>
-        <DayList setDay={setDay} todayName={todayName} days={days} todayWeekday={day} />
-        {settings.timetableJsonUrl ? (
-          !JsonParseError ? (
-            timetableData && timetableData.days ? (
+        <DayList dayState={{ setDay, day }} todayName={todayName} days={days} />
+        {!settings.timetableJsonUrl ? (
+          <p className="mt-5">
+            Please set the correct timetable JSON URL in the settings.
+          </p>
+        ) : (
+          JsonParseError ? (
+            <p className="mt-5">
+              Something went wrong parsing the JSON data, please make sure you
+              set the correct URL
+            </p>
+          ) : (
+            !timetableData || !timetableData.days ? (
+              <Spinner className="mt-5" animation="border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </Spinner>
+            ) : (
               <>
                 <SubjectList
                   timetableData={timetableData.days}
-                  checkedSubjects={checkedSubjects}
-                  setCheckedSubjects={setCheckedSubjects}
+                  checkedSubjectsState={{ checkedSubjects, setCheckedSubjects }}
                 />
-                {timetableData.days[day].length > 0 ? <DayEntries
+                {timetableData.days[day].length <= 0 ? <p className="mt-5">No classes today</p> : <DayEntries
                   dayTimetableData={timetableData.days[day].filter(
                     (_entry) =>
                       !checkedSubjects.includes(
                         _entry["Subject Code and Title"]
                       )
                   )}
-                /> : <p className="mt-5">No classes today</p>}
+                />}
               </>
-            ) : (
-              <Spinner className="mt-5" animation="border" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </Spinner>
             )
-          ) : (
-            <p className="mt-5">
-              Something went wrong parsing the JSON data, please make sure you
-              set the correct URL
-            </p>
           )
-        ) : (
-          <p className="mt-5">
-            Please set the correct timetable JSON URL in the settings.
-          </p>
         )}
       </div>
       <ToastContainer containerPosition="fixed" position="bottom-center" className="p-3">
-        <Toast id="refetch-toast" show={showRefetchToast} onClose={toggleShowRefetchToast}>
-          <Toast.Header>
-            <strong className="me-auto">New timetable available</strong>
-          </Toast.Header>
-          <Toast.Body>
-            <div id="refetch-toast-details">
-              <Table striped bordered responsive>
-                <tbody>
-                  <tr>
-                    <td><b>New</b></td>
-                    <td>{fetchedTimetableData?.generatedDate}</td>
-                  </tr>
-                  <tr>
-                    <td><b>Current</b></td>
-                    <td>{timetableData?.generatedDate}</td>
-                  </tr>
-                </tbody>
-              </Table>
-            </div>
-            <Button variant="primary" onClick={() => setTimetableData(fetchedTimetableData)}>
-              Update
-            </Button>
-          </Toast.Body>
-        </Toast>
+        <RefetchToast refetchToastState={{ showRefetchToast, toggleShowRefetchToast }} timetableDataState={{ timetableData, setTimetableData }} fetchedTimetableData={fetchedTimetableData} />
       </ToastContainer>
     </SettingsContext.Provider>
   );

@@ -1,12 +1,10 @@
-import { useState } from "react";
 import Accordion from "react-bootstrap/Accordion";
 import Checkbox from "./Checkbox";
 import getSubjectsFromData from "../utils/getSubjectsFromData";
 
 export default function SubjectList({
   timetableData,
-  checkedSubjects,
-  setCheckedSubjects,
+  checkedSubjectsState: { checkedSubjects, setCheckedSubjects },
 }) {
   const subjects = getSubjectsFromData(timetableData);
 

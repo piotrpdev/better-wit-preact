@@ -1,8 +1,12 @@
 import Nav from "react-bootstrap/Nav";
 
-export default function DayList({ setDay, todayName, days, todayWeekday }) {
+export default function DayList({
+  dayState: { setDay, day: _day },
+  todayName,
+  days,
+}) {
   return (
-    <Nav className="px-2" fill variant="tabs" activeKey={todayWeekday}>
+    <Nav className="px-2" fill variant="tabs" activeKey={_day}>
       {days.map((day) => (
         <Nav.Item key={day}>
           <Nav.Link eventKey={day} onClick={() => setDay(day)}>
