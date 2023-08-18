@@ -64,7 +64,8 @@ export default function SettingsBtn({
     <>
       <Button
         variant="secondary"
-        className="settingsButton"
+        className="header-child settingsButton"
+        size="lg"
         onClick={handleShow}
       >
         <FaCog />

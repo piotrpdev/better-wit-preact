@@ -5,5 +5,6 @@
   // Add those two lines:
   "editor.formatOnSave": true, // Tell VSCode to format files on save
   "editor.defaultFormatter": "esbenp.prettier-vscode", // Tell VSCode to use Prettier as default file formatter
-  "cSpell.words": ["bootswatch", "piotrpdev", "preact", "sirv"]
+  "cSpell.words": ["bootswatch", "piotrpdev", "preact", "sirv"],
+  "javascript.validate.enable": false
 }

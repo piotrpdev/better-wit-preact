@@ -1,17 +1,35 @@
+@import url("https://fonts.googleapis.com/css2?family=Public+Sans&display=swap");
+
 .App {
   text-align: center;
+  --card-radius: 5px;
 }
 
 header {
   position: relative;
   background-color: rgba(0, 0, 0, 0.7);
   color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0.8rem 0 0.8rem 0;
+}
+
+header > h1 {
+  font-family: "Public Sans", sans-serif;
 }
 
 .settingsButton {
   position: absolute;
-  top: 5px;
-  right: 5px;
+  /* top: 5px; */
+  right: 0.5rem;
+  font-size: 22px;
+
+  display: flex;
+  background-color: initial;
+  border: none;
 }
 
 .modal-footer {
@@ -33,6 +51,9 @@ table.entryContainer td.room-and-time {
   font-size: 1.5rem;
   font-weight: bold;
   width: 80px;
+
+  border-top-left-radius: var(--card-radius);
+  border-bottom-left-radius: var(--card-radius);
 }
 
 table.entryContainer td .room-and-time-flex {
@@ -52,6 +73,9 @@ table.entryContainer td .room-and-time-flex {
 
 table.entryContainer td.subject-and-lecturer {
   text-align: left;
+
+  border-top-right-radius: var(--card-radius);
+  border-bottom-right-radius: var(--card-radius);
 }
 
 table.entryContainer td .lecturer {
@@ -77,24 +101,28 @@ table.entryContainer td .lecturer {
 
 /* https://developer.mozilla.org/en-US/docs/Web/CSS/named-color#css_level_3_values */
 
-.entry.L {
+.L {
   /* background-color: lightblue; */
   background-color: rgba(173, 216, 230, 0.5);
 }
 
-.entry.P {
+.P {
   /* background-color: orange; */
   background-color: rgba(255, 165, 0, 0.5);
 }
 
-.entry.T {
+.T {
   /* background-color: deeppink; */
   background-color: rgba(255, 20, 147, 0.5);
 }
 
-.entry.RP {
+.RP {
   /* background-color: red; */
   background-color: rgba(255, 0, 0, 0.5);
+}
+
+.entry {
+  box-shadow: 5px 5px 8px 2px rgba(0, 0, 0, 0.3);
 }
 
 .entry .subject {

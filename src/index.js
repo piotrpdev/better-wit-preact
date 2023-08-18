@@ -97,8 +97,8 @@ export default function App() {
   return (
     <SettingsContext.Provider value={{ settings, setSettings }}>
       <div className="App">
-        <header>
-          <h1 className="py-2 mb-3">WIT Timetable</h1>
+        <header className="mb-3">
+          <h1 className="mb-0">WIT Timetable</h1>
           <SettingsBtn timetableDataState={{ timetableData, setTimetableData }} />
         </header>
         <DayList dayState={{ setDay, day }} todayName={todayName} days={days} />

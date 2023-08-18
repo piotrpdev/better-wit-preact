@@ -30,8 +30,8 @@ export default function Entry(props) {
   const TypeSVG = svgMap[typeAndLocation[0]] || svgMap.default;
 
   return (
-    <tr className={`entry ${typeAndLocation[0]}`}>
-      <td className="room-and-time">
+    <tr className="entry">
+      <td className={`room-and-time ${typeAndLocation[0]}`}>
         <div className="room-and-time-flex">
           <div className="room">{props.entry["Room*"]}</div>
           <div className="line" />
@@ -41,7 +41,7 @@ export default function Entry(props) {
       <td
         className={`subject-and-lecturer ${
           settings["Show Type and Location"] ? "" : "alone"
-        }`}
+        } ${typeAndLocation[0]}`}
       >
         <div className="subject">{title}</div>
         <div className="lecturer">{lecturer}</div>
