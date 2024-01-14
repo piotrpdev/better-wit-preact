@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect } from "react";
 import DayEntries from "./components/DayEntries";
 import DayList from "./components/DayList";
 import SettingsBtn from "./components/SettingsBtn";
@@ -25,15 +25,11 @@ export default function App() {
     defaultValue: SettingsDefault,
   });
 
-  const days = useMemo(() => ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], []);
-  const [now] = useState(DateTime.now())
-  const [todayName] = useState(now.setZone('Europe/Dublin').toFormat("EEEE"));
+  const todayName = (DateTime.now()).setZone('Europe/Dublin').toFormat("EEEE");
 
-  const getWeekday = useCallback(() => {
-    return days.includes(todayName) ? todayName : "Monday"
-  }, [days, todayName])
-
-  const [day, setDay] = useState(getWeekday);
+  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+  const getWeekday = () => days.includes(todayName) ? todayName : "Monday";
+  const [day, setDay] = useState(getWeekday());
 
   const [JsonParseError, setJsonParseError] = useState(false);
 
@@ -57,12 +53,20 @@ export default function App() {
   const toggleShowRefetchToast = () => setShowRefetchToast((prev) => !prev);
 
   useEffect(() => {
+    const weekday = getWeekday();
+    console.log(`Setting day to ${weekday}`)
+    setDay(getWeekday());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
     setShowRefetchToast(false);
     setJsonParseError(false);
     if (timetableData?.devDetails) {
       const timetableDate = DateTime.fromISO(timetableData.devDetails.generatedDate)
 
       if (!timetableData.invalid && settings["Auto Update"]) {
+        console.log("Fetching timetable data in devDetails")
         fetchTimetable(settings.timetableJsonUrl).then(({ data, error }) => {
           if (error) {
             //setJsonParseError(true);
@@ -71,6 +75,7 @@ export default function App() {
             const diffDays = fetchedTimetableDate.diff(timetableDate, 'days').toObject().days
 
             if (diffDays > 0) {
+              console.log("Fetched timetable data successfully")
               setFetchedTimetableData(data);
               setShowRefetchToast(true);
             }
@@ -80,19 +85,20 @@ export default function App() {
     }
     if (timetableData || !settings.timetableJsonUrl) return;
 
+    console.log("Fetching timetable data")
     fetchTimetable(settings.timetableJsonUrl).then(({ data, error }) => {
       if (error) {
+        console.error("Error fetching timetable data")
         setJsonParseError(true);
       } else {
+        console.log("Fetched timetable data successfully")
         setTimetableData(data);
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [settings.timetableJsonUrl, settings["Auto Update"], timetableData, now]);
+  }, [settings.timetableJsonUrl, settings["Auto Update"], timetableData]);
 
-  useEffect(() => {
-    setDay(getWeekday())
-  }, [todayName, getWeekday])
+  console.log("App Rendered")
 
   return (
     <SettingsContext.Provider value={{ settings, setSettings }}>
