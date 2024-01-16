@@ -107,7 +107,7 @@ export default function App() {
           <h1 className="mb-0">WIT Timetable</h1>
           <SettingsBtn timetableDataState={{ timetableData, setTimetableData }} />
         </header>
-        <DayList dayState={{ setDay, day }} todayName={todayName} days={days} />
+        <DayList day={day} setDay={setDay} todayName={todayName} days={days} />
         {!settings.timetableJsonUrl ? (
           <p className="mt-5">
             Please set the correct timetable JSON URL in the settings.

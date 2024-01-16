@@ -1,23 +1,21 @@
 import Nav from "react-bootstrap/Nav";
 
-export default function DayList({
-  dayState: { setDay, day: _day },
-  todayName,
-  days,
-}) {
+export default function DayList({ day, setDay, todayName, days }) {
+  console.debug(`DayList: day: ${day}, todayName: ${todayName}`);
+
   return (
     <Nav className="px-2" fill variant="tabs">
-      {days.map((day) => (
-        <Nav.Item key={day}>
+      {days.map((_day) => (
+        <Nav.Item key={_day}>
           <Nav.Link
-            eventKey={day}
-            active={day === _day}
-            onClick={() => setDay(day)}
+            eventKey={_day}
+            active={_day === day}
+            onClick={() => setDay(_day)}
           >
-            {day === todayName ? (
-              <b className="text-warning">{day.slice(0, 3)}</b>
+            {_day === todayName ? (
+              <b className="text-warning">{_day.slice(0, 3)}</b>
             ) : (
-              day.slice(0, 3)
+              _day.slice(0, 3)
             )}
           </Nav.Link>
         </Nav.Item>
